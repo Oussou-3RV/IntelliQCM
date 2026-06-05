@@ -1,0 +1,6 @@
+com/intelliqcm/backend/quiz/model/QuizSession.class
+com/intelliqcm/backend/quiz/model/QuizResult$QuizResultBuilder.class
+com/intelliqcm/backend/quiz/model/QuizResult.class
+com/intelliqcm/backend/quiz/model/QuizSession$QuizSessionBuilder.class
+com/intelliqcm/backend/quiz/repository/QuizResultRepository.class
+com/intelliqcm/backend/quiz/repository/QuizSessionRepository.class
