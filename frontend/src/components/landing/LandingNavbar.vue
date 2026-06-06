@@ -10,20 +10,42 @@
         <a href="#tarifs" class="hover:text-white transition-colors">Tarifs</a>
       </nav>
       <div class="flex items-center gap-3">
-        <RouterLink to="/login" class="text-sm text-gray-400 hover:text-white transition-colors">
-          Connexion
-        </RouterLink>
-        <RouterLink
-          to="/register"
-          class="text-sm bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg transition-colors font-medium"
-        >
-          Commencer
-        </RouterLink>
+        <template v-if="auth.isAuthenticated">
+          <RouterLink to="/app" class="text-sm text-gray-400 hover:text-white transition-colors">
+            Mon quiz
+          </RouterLink>
+          <button
+            @click="handleLogout"
+            class="text-sm text-gray-400 hover:text-white transition-colors"
+          >
+            Déconnexion
+          </button>
+        </template>
+        <template v-else>
+          <RouterLink to="/login" class="text-sm text-gray-400 hover:text-white transition-colors">
+            Connexion
+          </RouterLink>
+          <RouterLink
+            to="/register"
+            class="text-sm bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+          >
+            Commencer
+          </RouterLink>
+        </template>
       </div>
     </div>
   </header>
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
+const router = useRouter()
+
+function handleLogout() {
+  auth.logout()
+  router.push('/')
+}
 </script>
