@@ -1,5 +1,19 @@
 <template>
     <div class="min-h-screen bg-gray-900 text-white">
+
+      <!-- Header -->
+      <header class="border-b border-gray-800 px-6 py-4">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-indigo-400 text-2xl">◈</span>
+            <span class="text-white font-black text-xl tracking-tight">QuizAI</span>
+          </div>
+          <RouterLink to="/" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">
+            Accueil
+          </RouterLink>
+        </div>
+      </header>
+
       <div class="max-w-2xl mx-auto px-4 py-12 space-y-8">
   
         <!-- ÉTAPE 1 : Setup -->
@@ -73,6 +87,7 @@
   
   <script setup>
   import { ref, computed } from 'vue'
+  import { RouterLink } from 'vue-router'
   import { generateQuiz } from '../services/quizService.js'
   import FileUploader from '../components/FileUploader.vue'
   import QuizConfig from '../components/QuizConfig.vue'
