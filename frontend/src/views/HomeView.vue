@@ -8,9 +8,10 @@
             <span class="text-indigo-400 text-2xl">◈</span>
             <span class="text-white font-black text-xl tracking-tight">QuizAI</span>
           </div>
-          <RouterLink to="/" class="text-sm text-gray-500 hover:text-gray-300 transition-colors">
-            Accueil
-          </RouterLink>
+          <div class="flex items-center gap-5 text-sm text-gray-400">
+            <RouterLink to="/history" class="hover:text-white transition-colors">Historique</RouterLink>
+            <RouterLink to="/" class="hover:text-white transition-colors">Accueil</RouterLink>
+          </div>
         </div>
       </header>
 
@@ -89,6 +90,10 @@
   import { ref, computed } from 'vue'
   import { RouterLink } from 'vue-router'
   import { generateQuiz } from '../services/quizService.js'
+  import { saveSession } from '../services/sessionService.js'
+  import { useAuthStore } from '@/stores/auth'
+
+  const auth = useAuthStore()
   import FileUploader from '../components/FileUploader.vue'
   import QuizConfig from '../components/QuizConfig.vue'
   import QuestionCard from '../components/QuestionCard.vue'
@@ -154,11 +159,29 @@
     showFeedback.value = true
   }
   
-  function nextQuestion() {
+  async function nextQuestion() {
     showFeedback.value = false
     selectedAnswer.value = null
     if (currentIndex.value + 1 >= questions.value.length) {
       step.value = 'report'
+      if (auth.isAuthenticated) {
+        try {
+          await saveSession({
+            score: score.value,
+            totalQuestions: questions.value.length,
+            difficulty: config.value.difficulty,
+            subject: courseContent.value.slice(0, 100),
+            results: results.value.map(r => ({
+              questionText: r.question.question,
+              selectedAnswer: String(r.question.choices[r.selected]),
+              correctAnswer: String(r.question.choices[r.question.correct]),
+              correct: r.correct
+            }))
+          })
+        } catch (e) {
+          console.warn('Session non sauvegardée :', e.message)
+        }
+      }
     } else {
       currentIndex.value++
     }
