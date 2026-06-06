@@ -10,6 +10,7 @@
         <div class="flex items-center gap-6 text-sm text-gray-400">
           <RouterLink to="/app" class="hover:text-white transition-colors">Nouveau quiz</RouterLink>
           <RouterLink to="/history" class="text-white font-medium">Historique</RouterLink>
+          <RouterLink to="/dashboard" class="hover:text-white transition-colors">Tableau de bord</RouterLink>
         </div>
       </div>
     </header>
