@@ -6,6 +6,7 @@ import RegisterView from '../views/RegisterView.vue'
 import HistoryView from '../views/HistoryView.vue'
 import SessionDetailView from '../views/SessionDetailView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import UpgradeView from '../views/UpgradeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +51,11 @@ const router = createRouter({
       name: 'dashboard',
       component: DashboardView,
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/upgrade',
+      name: 'upgrade',
+      component: UpgradeView
     }
   ],
   scrollBehavior(to) {

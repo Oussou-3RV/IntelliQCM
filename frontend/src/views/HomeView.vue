@@ -9,6 +9,7 @@
             <span class="text-white font-black text-xl tracking-tight">QuizAI</span>
           </div>
           <div class="flex items-center gap-5 text-sm text-gray-400">
+            <RouterLink to="/dashboard" class="hover:text-white transition-colors">Dashboard</RouterLink>
             <RouterLink to="/history" class="hover:text-white transition-colors">Historique</RouterLink>
             <RouterLink to="/" class="hover:text-white transition-colors">Accueil</RouterLink>
           </div>
@@ -27,16 +28,32 @@
               Upload ton cours, l'IA génère un quiz personnalisé et t'aide à cibler tes lacunes.
             </p>
           </div>
-  
+
+          <!-- Bandeau quota -->
+          <div
+            v-if="auth.isAuthenticated && !auth.isPremium && quota !== null"
+            class="flex items-center justify-between bg-gray-800/60 border border-gray-700/50 rounded-lg px-4 py-3 text-sm"
+          >
+            <span class="text-gray-400">
+              Quiz restants aujourd'hui :
+              <span class="font-semibold" :class="quota === 0 ? 'text-red-400' : 'text-white'">
+                {{ quota }} / 3
+              </span>
+            </span>
+            <RouterLink to="/upgrade" class="text-indigo-400 hover:text-indigo-300 transition-colors font-medium">
+              Passer Premium
+            </RouterLink>
+          </div>
+
           <FileUploader @content-ready="onContentReady" />
-  
+
           <QuizConfig
             v-if="courseContent"
             v-model="config"
             :loading="loading"
             @start="startQuiz"
           />
-  
+
           <p v-if="error" class="text-red-400 text-sm text-center">{{ error }}</p>
         </div>
   
@@ -87,13 +104,29 @@
   </template>
   
   <script setup>
-  import { ref, computed } from 'vue'
-  import { RouterLink } from 'vue-router'
+  import { ref, computed, onMounted } from 'vue'
+  import { RouterLink, useRouter } from 'vue-router'
   import { generateQuiz } from '../services/quizService.js'
   import { saveSession } from '../services/sessionService.js'
   import { useAuthStore } from '@/stores/auth'
 
   const auth = useAuthStore()
+  const router = useRouter()
+  const quota = ref(null)
+
+  onMounted(async () => {
+    if (auth.isAuthenticated) {
+      try {
+        const res = await fetch('http://localhost:8080/api/quiz/quota', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        })
+        const data = await res.json()
+        quota.value = data.isPremium ? null : Number(data.remaining)
+      } catch {
+        // silencieux si le backend n'est pas disponible
+      }
+    }
+  })
   import FileUploader from '../components/FileUploader.vue'
   import QuizConfig from '../components/QuizConfig.vue'
   import QuestionCard from '../components/QuestionCard.vue'
@@ -141,6 +174,10 @@
       results.value = []
       step.value = 'quiz'
     } catch (e) {
+      if (e.status === 429 || e.message?.includes('quota')) {
+        router.push('/upgrade')
+        return
+      }
       error.value = 'Erreur lors de la génération du quiz. Vérifie que le backend est lancé.'
     } finally {
       loading.value = false
