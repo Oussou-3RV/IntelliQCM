@@ -1,18 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-900 text-white">
-
-    <header class="border-b border-gray-800 px-6 py-4">
-      <div class="max-w-3xl mx-auto flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span class="text-indigo-400 text-2xl">◈</span>
-          <span class="text-white font-black text-xl tracking-tight">QuizAI</span>
-        </div>
-        <RouterLink to="/history" class="text-sm text-gray-400 hover:text-white transition-colors">
-          Retour à l'historique
-        </RouterLink>
-      </div>
-    </header>
-
+  <AppLayout>
     <div class="max-w-3xl mx-auto px-4 py-10 space-y-8">
 
       <div v-if="loading" class="text-gray-500 text-sm py-10 text-center">Chargement...</div>
@@ -82,12 +69,13 @@
 
       </template>
     </div>
-  </div>
+  </AppLayout>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
+import AppLayout from '@/components/layout/AppLayout.vue'
 import { getSessionDetail } from '@/services/sessionService'
 
 const route = useRoute()

@@ -1,22 +1,6 @@
 <template>
-    <div class="min-h-screen bg-gray-900 text-white">
-
-      <!-- Header -->
-      <header class="border-b border-gray-800 px-6 py-4">
-        <div class="max-w-2xl mx-auto flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <span class="text-indigo-400 text-2xl">◈</span>
-            <span class="text-white font-black text-xl tracking-tight">QuizAI</span>
-          </div>
-          <div class="flex items-center gap-5 text-sm text-gray-400">
-            <RouterLink to="/dashboard" class="hover:text-white transition-colors">Dashboard</RouterLink>
-            <RouterLink to="/history" class="hover:text-white transition-colors">Historique</RouterLink>
-            <RouterLink to="/" class="hover:text-white transition-colors">Accueil</RouterLink>
-          </div>
-        </div>
-      </header>
-
-      <div class="max-w-2xl mx-auto px-4 py-12 space-y-8">
+    <AppLayout>
+      <div class="max-w-2xl mx-auto px-4 py-10 space-y-8">
   
         <!-- ÉTAPE 1 : Setup -->
         <div v-if="step === 'setup'" class="space-y-6">
@@ -47,6 +31,7 @@
 
           <FileUploader @content-ready="onContentReady" />
 
+
           <QuizConfig
             v-if="courseContent"
             v-model="config"
@@ -59,12 +44,19 @@
   
         <!-- ÉTAPE 2 : Quiz -->
         <div v-else-if="step === 'quiz'" class="space-y-6">
-  
+
+          <!-- Badge mode examen -->
+          <div v-if="isExamMode" class="flex items-center justify-center">
+            <span class="text-xs font-semibold uppercase tracking-widest border border-gray-600 text-gray-400 px-3 py-1 rounded-full">
+              Mode examen — résultats à la fin
+            </span>
+          </div>
+
           <!-- Progress bar -->
           <div class="space-y-2">
             <div class="flex justify-between text-sm text-gray-400">
               <span>Question {{ currentIndex + 1 }} / {{ questions.length }}</span>
-              <span>{{ score }} correcte(s)</span>
+              <span v-if="!isExamMode">{{ score }} correcte(s)</span>
             </div>
             <div class="h-1.5 bg-gray-700 rounded-full overflow-hidden">
               <div
@@ -73,21 +65,30 @@
               />
             </div>
           </div>
-  
+
+          <!-- Timer (mode examen) -->
+          <ExamTimer
+            v-if="isExamMode && !showFeedback"
+            :key="currentIndex"
+            :seconds="config.timerSeconds || 30"
+            @timeout="onTimeout"
+          />
+
           <QuestionCard
             v-if="!showFeedback"
             :question="currentQuestion"
             @answered="onAnswered"
           />
-  
+
+          <!-- Feedback uniquement en mode révision -->
           <AnswerFeedback
-            v-else
+            v-if="showFeedback && !isExamMode"
             :question="currentQuestion"
             :selected="selectedAnswer"
             :is-correct="isCorrect"
             @next="nextQuestion"
           />
-  
+
         </div>
   
         <!-- ÉTAPE 3 : Rapport -->
@@ -100,7 +101,7 @@
         </div>
   
       </div>
-    </div>
+    </AppLayout>
   </template>
   
   <script setup>
@@ -109,6 +110,14 @@
   import { generateQuiz } from '../services/quizService.js'
   import { saveSession } from '../services/sessionService.js'
   import { useAuthStore } from '@/stores/auth'
+  import ExamTimer from '../components/ExamTimer.vue'
+
+  import AppLayout from '../components/layout/AppLayout.vue'
+  import FileUploader from '../components/FileUploader.vue'
+  import QuizConfig from '../components/QuizConfig.vue'
+  import QuestionCard from '../components/QuestionCard.vue'
+  import AnswerFeedback from '../components/AnswerFeedback.vue'
+  import FinalReport from '../components/FinalReport.vue'
 
   const auth = useAuthStore()
   const router = useRouter()
@@ -127,16 +136,11 @@
       }
     }
   })
-  import FileUploader from '../components/FileUploader.vue'
-  import QuizConfig from '../components/QuizConfig.vue'
-  import QuestionCard from '../components/QuestionCard.vue'
-  import AnswerFeedback from '../components/AnswerFeedback.vue'
-  import FinalReport from '../components/FinalReport.vue'
-  
+
   // ── State ─────────────────────────────────────────────────────────────
   const step = ref('setup')
   const courseContent = ref('')
-  const config = ref({ questionCount: 10, difficulty: 'moyen' })
+  const config = ref({ questionCount: 10, difficulty: 'moyen', mode: 'revision', timerSeconds: 30 })
   const loading = ref(false)
   const error = ref('')
   
@@ -153,6 +157,7 @@
   const progressPercent = computed(() =>
     Math.round((currentIndex.value / questions.value.length) * 100)
   )
+  const isExamMode = computed(() => config.value.mode === 'exam')
   
   // ── Handlers ──────────────────────────────────────────────────────────
   function onContentReady(content) {
@@ -193,7 +198,23 @@
       selected: choiceIndex,
       correct: isCorrect.value
     })
-    showFeedback.value = true
+    if (isExamMode.value) {
+      // Pas de feedback — on passe directement à la question suivante
+      nextQuestion()
+    } else {
+      showFeedback.value = true
+    }
+  }
+
+  // Timeout timer — réponse marquée incorrecte automatiquement
+  function onTimeout() {
+    if (showFeedback.value) return
+    results.value.push({
+      question: currentQuestion.value,
+      selected: null,
+      correct: false
+    })
+    nextQuestion()
   }
   
   async function nextQuestion() {
@@ -207,6 +228,7 @@
             score: score.value,
             totalQuestions: questions.value.length,
             difficulty: config.value.difficulty,
+            mode: config.value.mode,
             subject: courseContent.value.slice(0, 100),
             results: results.value.map(r => ({
               questionText: r.question.question,
