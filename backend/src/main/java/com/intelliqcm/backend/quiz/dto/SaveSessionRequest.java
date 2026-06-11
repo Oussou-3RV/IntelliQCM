@@ -9,6 +9,7 @@ public class SaveSessionRequest {
     private int totalQuestions;
     private String difficulty;
     private String subject;
+    private String mode;
     private List<ResultItem> results;
 
     @Data

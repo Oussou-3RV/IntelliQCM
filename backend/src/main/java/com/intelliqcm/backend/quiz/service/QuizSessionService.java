@@ -25,6 +25,7 @@ public class QuizSessionService {
                 .totalQuestions(request.getTotalQuestions())
                 .difficulty(request.getDifficulty())
                 .subject(request.getSubject())
+                .mode(request.getMode() != null ? request.getMode() : "revision")
                 .build();
 
         if (request.getResults() != null) {
