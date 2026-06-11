@@ -39,6 +39,10 @@ public class QuizSession {
     @Column(columnDefinition = "TEXT")
     private String subject;
 
+    @Column
+    @Builder.Default
+    private String mode = "revision";
+
     @Column(nullable = false, updatable = false)
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();

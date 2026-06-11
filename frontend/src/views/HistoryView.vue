@@ -1,20 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-900 text-white">
-
-    <header class="border-b border-gray-800 px-6 py-4">
-      <div class="max-w-3xl mx-auto flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span class="text-indigo-400 text-2xl">◈</span>
-          <span class="text-white font-black text-xl tracking-tight">QuizAI</span>
-        </div>
-        <div class="flex items-center gap-6 text-sm text-gray-400">
-          <RouterLink to="/app" class="hover:text-white transition-colors">Nouveau quiz</RouterLink>
-          <RouterLink to="/history" class="text-white font-medium">Historique</RouterLink>
-          <RouterLink to="/dashboard" class="hover:text-white transition-colors">Tableau de bord</RouterLink>
-        </div>
-      </div>
-    </header>
-
+  <AppLayout>
     <div class="max-w-3xl mx-auto px-4 py-10 space-y-6">
 
       <div class="space-y-1">
@@ -68,12 +53,13 @@
       </div>
 
     </div>
-  </div>
+  </AppLayout>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
+import AppLayout from '@/components/layout/AppLayout.vue'
 import { getSessions } from '@/services/sessionService'
 
 const sessions = ref([])
