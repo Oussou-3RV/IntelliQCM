@@ -11,108 +11,76 @@
           <span class="text-white font-black text-xl tracking-tight">QuizAI</span>
         </RouterLink>
 
-        <!-- Nav desktop -->
-        <nav class="hidden md:flex items-center gap-6 text-sm text-gray-400">
+        <!-- Nav desktop uniquement -->
+        <nav class="hidden md:flex items-center gap-1">
           <RouterLink
             v-for="link in navLinks"
             :key="link.to"
             :to="link.to"
-            class="hover:text-white transition-colors"
-            :class="{ 'text-white font-medium': isActive(link.to) }"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all duration-150"
+            :class="isActive(link.to)
+              ? 'bg-indigo-600/20 text-indigo-400 font-medium'
+              : 'text-gray-400 hover:text-white hover:bg-gray-800'"
           >
+            <component :is="link.icon" :size="15" :stroke-width="isActive(link.to) ? 2.5 : 1.8" />
             {{ link.label }}
           </RouterLink>
         </nav>
 
-        <!-- Droite : user + déconnexion (desktop) + hamburger (mobile) -->
+        <!-- Droite : user + déconnexion desktop / nom + déco mobile -->
         <div class="flex items-center gap-3">
-          <!-- User + logout desktop -->
+          <!-- Desktop -->
           <div class="hidden md:flex items-center gap-3 text-sm">
             <span class="text-gray-500">{{ auth.user?.name }}</span>
             <button
               @click="handleLogout"
-              class="text-gray-400 hover:text-white transition-colors border border-gray-700 hover:border-gray-600 px-3 py-1.5 rounded-lg"
+              class="flex items-center gap-1.5 text-gray-400 hover:text-white transition-colors border border-gray-700 hover:border-gray-600 px-3 py-1.5 rounded-lg"
             >
+              <LogOut :size="14" />
               Déconnexion
             </button>
           </div>
 
-          <!-- Hamburger mobile -->
-          <button
-            class="md:hidden flex flex-col gap-1.5 p-2"
-            @click="menuOpen = !menuOpen"
-            aria-label="Menu"
-          >
-            <span
-              class="block w-5 h-0.5 bg-gray-400 transition-all duration-200"
-              :class="menuOpen ? 'rotate-45 translate-y-2' : ''"
-            />
-            <span
-              class="block w-5 h-0.5 bg-gray-400 transition-all duration-200"
-              :class="menuOpen ? 'opacity-0' : ''"
-            />
-            <span
-              class="block w-5 h-0.5 bg-gray-400 transition-all duration-200"
-              :class="menuOpen ? '-rotate-45 -translate-y-2' : ''"
-            />
-          </button>
+          <!-- Mobile : juste le nom + déconnexion compact -->
+          <div class="md:hidden flex items-center gap-3 text-sm">
+            <span class="text-gray-500 text-xs">{{ auth.user?.name }}</span>
+            <button
+              @click="handleLogout"
+              class="text-xs text-gray-400 hover:text-white transition-colors"
+            >
+              Déco.
+            </button>
+          </div>
         </div>
 
-      </div>
-
-      <!-- Menu mobile déroulant -->
-      <div
-        v-if="menuOpen"
-        class="md:hidden border-t border-gray-800 mt-4 pt-4 pb-2 space-y-1"
-        @click="menuOpen = false"
-      >
-        <RouterLink
-          v-for="link in navLinks"
-          :key="link.to"
-          :to="link.to"
-          class="flex items-center gap-3 px-2 py-2.5 rounded-lg text-sm transition-colors"
-          :class="isActive(link.to)
-            ? 'bg-indigo-600/20 text-white font-medium'
-            : 'text-gray-400 hover:text-white hover:bg-gray-800'"
-        >
-          <span class="text-indigo-400 text-xs">{{ link.icon }}</span>
-          {{ link.label }}
-        </RouterLink>
-
-        <div class="border-t border-gray-800 mt-3 pt-3 px-2 flex items-center justify-between">
-          <span class="text-gray-500 text-sm">{{ auth.user?.name }}</span>
-          <button
-            @click="handleLogout"
-            class="text-sm text-gray-400 hover:text-white transition-colors"
-          >
-            Déconnexion
-          </button>
-        </div>
       </div>
     </header>
 
-    <!-- Contenu -->
-    <main>
+    <!-- Contenu — padding bas sur mobile pour laisser place à la bottom nav -->
+    <main class="pb-24 md:pb-0">
       <slot />
     </main>
+
+    <!-- Bottom nav mobile -->
+    <BottomNav />
 
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { BookOpen, History, LayoutDashboard, LogOut } from 'lucide-vue-next'
+import BottomNav from './BottomNav.vue'
 
 const auth = useAuthStore()
 const router = useRouter()
 const route = useRoute()
-const menuOpen = ref(false)
 
 const navLinks = [
-  { to: '/app',       label: 'Nouveau quiz', icon: '◈' },
-  { to: '/history',   label: 'Historique',   icon: '◆' },
-  { to: '/dashboard', label: 'Dashboard',    icon: '◉' },
+  { to: '/app',       label: 'Nouveau quiz', icon: BookOpen        },
+  { to: '/history',   label: 'Historique',   icon: History         },
+  { to: '/dashboard', label: 'Dashboard',    icon: LayoutDashboard },
 ]
 
 function isActive(path) {
