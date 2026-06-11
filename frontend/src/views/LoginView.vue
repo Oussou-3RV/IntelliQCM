@@ -14,33 +14,43 @@
       <form @submit.prevent="handleSubmit" class="space-y-4">
         <div class="space-y-1">
           <label class="text-sm text-gray-400">Email</label>
-          <input
-            v-model="form.email"
-            type="email"
-            placeholder="toi@exemple.com"
-            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
-            required
-          />
+          <div class="relative">
+            <Mail :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+            <input
+              v-model="form.email"
+              type="email"
+              placeholder="toi@exemple.com"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg pl-9 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
+              required
+            />
+          </div>
         </div>
 
         <div class="space-y-1">
           <label class="text-sm text-gray-400">Mot de passe</label>
-          <input
-            v-model="form.password"
-            type="password"
-            placeholder="••••••••"
-            class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
-            required
-          />
+          <div class="relative">
+            <Lock :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+            <input
+              v-model="form.password"
+              type="password"
+              placeholder="••••••••"
+              class="w-full bg-gray-800 border border-gray-700 rounded-lg pl-9 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
+              required
+            />
+          </div>
         </div>
 
-        <p v-if="error" class="text-red-400 text-sm">{{ error }}</p>
+        <p v-if="error" class="flex items-center gap-2 text-red-400 text-sm">
+          <AlertCircle :size="14" /> {{ error }}
+        </p>
 
         <button
           type="submit"
           :disabled="loading"
-          class="w-full bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition-colors"
+          class="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition-colors"
         >
+          <Loader2 v-if="loading" :size="16" class="animate-spin" />
+          <LogIn v-else :size="16" />
           {{ loading ? 'Connexion...' : 'Se connecter' }}
         </button>
       </form>
@@ -59,6 +69,7 @@
 import { ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { Mail, Lock, LogIn, Loader2, AlertCircle } from 'lucide-vue-next'
 
 const router = useRouter()
 const auth = useAuthStore()

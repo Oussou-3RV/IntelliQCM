@@ -92,22 +92,16 @@
         :disabled="loading"
         @click="$emit('start')"
       >
-        <svg
-          v-if="loading"
-          class="animate-spin h-5 w-5 text-white"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
-        </svg>
-        <span>{{ loading ? 'Génération en cours...' : 'Générer le quiz ✦' }}</span>
+        <Loader2 v-if="loading" :size="18" class="animate-spin" />
+        <Sparkles v-else :size="18" />
+        <span>{{ loading ? 'Génération en cours...' : 'Générer le quiz' }}</span>
       </button>
     </div>
 </template>
 
 <script setup>
+import { Loader2, Sparkles } from 'lucide-vue-next'
+
 const props = defineProps({
   modelValue: Object,
   loading: Boolean

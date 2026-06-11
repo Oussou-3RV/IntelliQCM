@@ -7,7 +7,9 @@
         <p class="text-gray-400 text-sm">Bonjour {{ auth.user?.name }} — voici ta progression</p>
       </div>
 
-      <div v-if="loading" class="text-gray-500 text-sm py-10 text-center">Chargement...</div>
+      <div v-if="loading" class="flex items-center justify-center gap-2 text-gray-500 text-sm py-10">
+        <Loader2 :size="16" class="animate-spin" /> Chargement...
+      </div>
 
       <template v-else-if="data">
 
@@ -16,10 +18,13 @@
           <div
             v-for="stat in stats"
             :key="stat.label"
-            class="bg-gray-800/50 border border-gray-700/50 rounded-xl px-5 py-5 space-y-1"
+            class="bg-gray-800/50 border border-gray-700/50 rounded-xl px-4 py-4 space-y-3"
           >
-            <p class="text-gray-400 text-xs uppercase tracking-widest">{{ stat.label }}</p>
-            <p class="text-2xl font-black" :class="stat.color">{{ stat.value }}</p>
+            <component :is="stat.icon" :size="18" class="text-gray-500" />
+            <div>
+              <p class="text-gray-400 text-xs uppercase tracking-widest">{{ stat.label }}</p>
+              <p class="text-2xl font-black mt-0.5" :class="stat.color">{{ stat.value }}</p>
+            </div>
           </div>
         </div>
 
@@ -105,6 +110,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import AppLayout from '@/components/layout/AppLayout.vue'
+import { Trophy, TrendingUp, CalendarCheck, Star, Loader2 } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
 import { getDashboard } from '@/services/dashboardService'
 
@@ -123,14 +129,10 @@ onMounted(async () => {
 const stats = computed(() => {
   if (!data.value) return []
   return [
-    { label: 'Quiz complétés', value: data.value.totalSessions, color: 'text-white' },
-    { label: 'Score moyen', value: data.value.averageScore + '%', color: scoreColor(data.value.averageScore) },
-    { label: "Aujourd'hui", value: data.value.quizzesToday, color: 'text-indigo-400' },
-    {
-      label: 'Meilleure diff.',
-      value: bestDifficulty.value || '—',
-      color: 'text-green-400'
-    }
+    { label: 'Quiz complétés', value: data.value.totalSessions,         color: 'text-white',        icon: Trophy        },
+    { label: 'Score moyen',    value: data.value.averageScore + '%',     color: scoreColor(data.value.averageScore), icon: TrendingUp },
+    { label: "Aujourd'hui",    value: data.value.quizzesToday,           color: 'text-indigo-400',   icon: CalendarCheck },
+    { label: 'Meilleure diff.', value: bestDifficulty.value || '—',      color: 'text-green-400',    icon: Star          },
   ]
 })
 
