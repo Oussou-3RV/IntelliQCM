@@ -13,6 +13,19 @@
             </p>
           </div>
 
+          <!-- Bandeau replay -->
+          <div
+            v-if="isReplay"
+            class="flex items-center gap-3 bg-indigo-950/60 border border-indigo-500/30 rounded-lg px-4 py-3 text-sm"
+          >
+            <RotateCcw :size="15" class="text-indigo-400 shrink-0" />
+            <span class="text-gray-300">
+              Paramètres du quiz précédent restaurés —
+              <span class="text-white font-medium">{{ config.difficulty }}, {{ config.questionCount }} questions, mode {{ config.mode }}</span>.
+              Upload ton cours pour relancer.
+            </span>
+          </div>
+
           <!-- Bandeau quota -->
           <div
             v-if="auth.isAuthenticated && !auth.isPremium && quota !== null"
@@ -111,6 +124,7 @@
   import { saveSession } from '../services/sessionService.js'
   import { useAuthStore } from '@/stores/auth'
   import ExamTimer from '../components/ExamTimer.vue'
+  import { RotateCcw } from 'lucide-vue-next'
 
   import AppLayout from '../components/layout/AppLayout.vue'
   import FileUploader from '../components/FileUploader.vue'
@@ -122,8 +136,17 @@
   const auth = useAuthStore()
   const router = useRouter()
   const quota = ref(null)
+  const isReplay = ref(false)
 
   onMounted(async () => {
+    // Paramètres pré-remplis depuis l'historique (replay)
+    const replay = sessionStorage.getItem('replayConfig')
+    if (replay) {
+      config.value = { ...config.value, ...JSON.parse(replay) }
+      sessionStorage.removeItem('replayConfig')
+      isReplay.value = true
+    }
+
     if (auth.isAuthenticated) {
       try {
         const res = await fetch('http://localhost:8080/api/quiz/quota', {
