@@ -7,8 +7,8 @@
 
         <!-- Logo -->
         <RouterLink to="/app" class="flex items-center gap-2">
-          <span class="text-indigo-400 text-2xl">◈</span>
-          <span class="text-white font-black text-xl tracking-tight">QuizAI</span>
+          <GraduationCap :size="36" class="text-indigo-400" />
+          <span class="text-white font-black text-xl tracking-tight">IntelliQCM</span>
         </RouterLink>
 
         <!-- Nav desktop uniquement -->
@@ -70,7 +70,7 @@
 <script setup>
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { BookOpen, History, LayoutDashboard, LogOut } from 'lucide-vue-next'
+import { BookOpen, History, LayoutDashboard, LogOut,GraduationCap } from 'lucide-vue-next'
 import BottomNav from './BottomNav.vue'
 
 const auth = useAuthStore()
