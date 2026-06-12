@@ -1,6 +1,8 @@
 <template>
   <div class="flex items-center justify-between">
-    <span class="text-gray-400 text-sm">Temps restant</span>
+    <span class="flex items-center gap-1.5 text-gray-400 text-sm">
+      <Timer :size="14" /> Temps restant
+    </span>
     <span
       class="text-lg font-black tabular-nums transition-colors"
       :class="remaining <= 5 ? 'text-red-400' : remaining <= 10 ? 'text-yellow-400' : 'text-white'"
@@ -19,6 +21,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { Timer } from 'lucide-vue-next'
 
 const props = defineProps({
   seconds: { type: Number, required: true }
