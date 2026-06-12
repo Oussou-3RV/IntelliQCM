@@ -4,8 +4,8 @@
 
       <div class="text-center space-y-2">
         <RouterLink to="/" class="inline-flex items-center gap-2 mb-4">
-          <span class="text-indigo-400 text-2xl">◈</span>
-          <span class="text-white font-black text-xl tracking-tight">QuizAI</span>
+          <GraduationCap :size="36" class="text-indigo-400" />
+          <span class="text-white font-black text-xl tracking-tight">IntelliQCM</span>
         </RouterLink>
         <h1 class="text-2xl font-black tracking-tight">Connexion</h1>
         <p class="text-gray-400 text-sm">Bon retour parmi nous</p>
@@ -19,7 +19,7 @@
             <input
               v-model="form.email"
               type="email"
-              placeholder="toi@exemple.com"
+              placeholder="Oussou@exemple.com"
               class="w-full bg-gray-800 border border-gray-700 rounded-lg pl-9 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
               required
             />
@@ -69,7 +69,7 @@
 import { ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { Mail, Lock, LogIn, Loader2, AlertCircle } from 'lucide-vue-next'
+import { Mail, Lock, LogIn, Loader2, AlertCircle, GraduationCap } from 'lucide-vue-next'
 
 const router = useRouter()
 const auth = useAuthStore()
