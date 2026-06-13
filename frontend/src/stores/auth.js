@@ -16,11 +16,9 @@ export const useAuthStore = defineStore('auth', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password })
     })
-
     const data = await res.json()
     if (!res.ok) throw new Error(data.message || 'Erreur lors de l\'inscription')
-
-    _persist(data)
+    // Pas de _persist ici — l'user doit vérifier son email avant de se connecter
   }
 
   async function login(email, password) {
@@ -29,10 +27,11 @@ export const useAuthStore = defineStore('auth', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     })
-
     const data = await res.json()
-    if (!res.ok) throw new Error(data.message || 'Email ou mot de passe incorrect')
-
+    if (!res.ok) {
+      if (data.unverified) throw new Error('unverified:' + data.message)
+      throw new Error(data.message || 'Email ou mot de passe incorrect')
+    }
     _persist(data)
   }
 
