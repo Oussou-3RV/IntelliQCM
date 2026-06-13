@@ -26,8 +26,14 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    // Nullable pour les users Google (pas de mot de passe local)
+    @Column
     private String password;
+
+    // "local" ou "google"
+    @Column(nullable = false, columnDefinition = "varchar(255) default 'local'")
+    @Builder.Default
+    private String provider = "local";
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

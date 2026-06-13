@@ -50,5 +50,13 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('user', JSON.stringify(user.value))
   }
 
-  return { token, user, isAuthenticated, isPremium, register, login, logout }
+  // Appelé après le callback OAuth2 Google
+  function _persistFromOAuth(jwtToken, userData) {
+    token.value = jwtToken
+    user.value = { name: userData.name, email: userData.email, role: userData.role }
+    localStorage.setItem('token', jwtToken)
+    localStorage.setItem('user', JSON.stringify(user.value))
+  }
+
+  return { token, user, isAuthenticated, isPremium, register, login, logout, _persistFromOAuth }
 })
