@@ -8,6 +8,8 @@ import SessionDetailView from '../views/SessionDetailView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import UpgradeView from '../views/UpgradeView.vue'
 import AuthCallbackView from '../views/AuthCallbackView.vue'
+import CheckEmailView from '../views/CheckEmailView.vue'
+import VerifyEmailView from '../views/VerifyEmailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +59,16 @@ const router = createRouter({
       path: '/upgrade',
       name: 'upgrade',
       component: UpgradeView
+    },
+    {
+      path: '/check-email',
+      name: 'check-email',
+      component: CheckEmailView
+    },
+    {
+      path: '/verify-email',
+      name: 'verify-email',
+      component: VerifyEmailView
     },
     {
       path: '/auth/callback',

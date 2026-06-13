@@ -33,13 +33,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String email = oAuth2User.getAttribute("email");
         String name  = oAuth2User.getAttribute("name");
 
-        // Trouve ou crée l'utilisateur
+        // Trouve ou crée l'utilisateur — Google = auto-vérifié
         User user = userRepository.findByEmail(email).orElseGet(() ->
             userRepository.save(
                 User.builder()
                     .email(email)
                     .name(name != null ? name : email)
                     .provider("google")
+                    .verified(true)
                     .build()
             )
         );

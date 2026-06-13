@@ -40,9 +40,17 @@
           </div>
         </div>
 
-        <p v-if="error" class="flex items-center gap-2 text-red-400 text-sm">
+        <p v-if="error && !unverified" class="flex items-center gap-2 text-red-400 text-sm">
           <AlertCircle :size="14" /> {{ error }}
         </p>
+
+        <!-- Message spécifique email non vérifié -->
+        <div v-if="unverified" class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg px-4 py-3 space-y-1">
+          <p class="flex items-center gap-2 text-yellow-400 text-sm font-medium">
+            <AlertCircle :size="14" /> Email non vérifié
+          </p>
+          <p class="text-yellow-400/70 text-xs">Vérifie ta boîte email et clique sur le lien de confirmation.</p>
+        </div>
 
         <button
           type="submit"
@@ -98,15 +106,21 @@ const auth = useAuthStore()
 const form = ref({ email: '', password: '' })
 const loading = ref(false)
 const error = ref('')
+const unverified = ref(false)
 
 async function handleSubmit() {
   error.value = ''
+  unverified.value = false
   loading.value = true
   try {
     await auth.login(form.value.email, form.value.password)
     router.push('/app')
   } catch (e) {
-    error.value = e.message
+    if (e.message.startsWith('unverified:')) {
+      unverified.value = true
+    } else {
+      error.value = e.message
+    }
   } finally {
     loading.value = false
   }
