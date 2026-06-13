@@ -118,7 +118,8 @@ async function handleSubmit() {
   loading.value = true
   try {
     await auth.register(form.value.name, form.value.email, form.value.password)
-    router.push('/app')
+    // Redirige vers la page "vérifie ton email"
+    router.push({ name: 'check-email', query: { email: form.value.email } })
   } catch (e) {
     error.value = e.message
   } finally {

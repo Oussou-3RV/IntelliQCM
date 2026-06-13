@@ -21,8 +21,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+    public ResponseEntity<Map<String, String>> register(@Valid @RequestBody RegisterRequest request) {
+        authService.register(request);
+        return ResponseEntity.ok(Map.of("message", "Un email de confirmation a été envoyé à " + request.getEmail()));
     }
 
     @PostMapping("/login")
@@ -30,7 +31,12 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
-    // Récupère les infos du user connecté (utilisé après OAuth2 callback)
+    @GetMapping("/verify")
+    public ResponseEntity<Map<String, String>> verify(@RequestParam String token) {
+        authService.verifyEmail(token);
+        return ResponseEntity.ok(Map.of("message", "Email vérifié avec succès !"));
+    }
+
     @GetMapping("/me")
     public ResponseEntity<Map<String, String>> me(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(Map.of(
@@ -43,5 +49,10 @@ public class AuthController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, String>> handleError(IllegalArgumentException e) {
         return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+    }
+
+    @ExceptionHandler(AuthService.EmailNotVerifiedException.class)
+    public ResponseEntity<Map<String, String>> handleUnverified(AuthService.EmailNotVerifiedException e) {
+        return ResponseEntity.status(403).body(Map.of("message", e.getMessage(), "unverified", "true"));
     }
 }
