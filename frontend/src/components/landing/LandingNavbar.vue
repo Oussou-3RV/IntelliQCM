@@ -1,10 +1,9 @@
 <template>
-  <header class="border-b border-gray-800 px-4 sm:px-6 py-4 sticky top-0 z-50 bg-gray-950/95 backdrop-blur">
+  <header class="border-b border-gray-800 px-4 sm:px-6 py-4 sticky top-0 z-50 bg-gray-900/95 backdrop-blur">
     <div class="max-w-5xl mx-auto flex items-center justify-between">
 
       <!-- Logo -->
       <div class="flex items-center gap-2">
-        <!-- <span class="text-indigo-400 text-2xl">◈</span> -->
         <GraduationCap :size="36" class="text-indigo-400" />
         <span class="text-white font-black text-xl tracking-tight">IntelliQCM</span>
       </div>
