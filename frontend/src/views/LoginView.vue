@@ -28,7 +28,7 @@
             <input
               v-model="form.email"
               type="email"
-              placeholder="toi@exemple.com"
+              placeholder="Oussou@exemple.com"
               class="w-full bg-gray-800/60 border border-gray-700 hover:border-gray-600 focus:border-indigo-500 rounded-xl pl-10 pr-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none transition-colors"
               required
             />

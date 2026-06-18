@@ -22,24 +22,27 @@ public class AuthService {
     private final EmailService emailService;
 
     public void register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Un compte avec cet email existe déjà.");
-        }
-
         String verificationToken = UUID.randomUUID().toString();
 
-        User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .verified(false)
-                .verificationToken(verificationToken)
-                .build();
-
-        userRepository.save(user);
-
-        // Envoie l'email de vérification (asynchrone)
-        emailService.sendVerificationEmail(user.getEmail(), user.getName(), verificationToken);
+        userRepository.findByEmail(request.getEmail()).ifPresentOrElse(existing -> {
+            if (existing.isVerified()) {
+                throw new IllegalArgumentException("Un compte avec cet email existe déjà.");
+            }
+            // Compte non vérifié : on renouvelle le token et renvoie l'email
+            existing.setVerificationToken(verificationToken);
+            userRepository.save(existing);
+            emailService.sendVerificationEmail(existing.getEmail(), existing.getName(), verificationToken);
+        }, () -> {
+            User user = User.builder()
+                    .name(request.getName())
+                    .email(request.getEmail())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .verified(false)
+                    .verificationToken(verificationToken)
+                    .build();
+            userRepository.save(user);
+            emailService.sendVerificationEmail(user.getEmail(), user.getName(), verificationToken);
+        });
     }
 
     public AuthResponse login(LoginRequest request) {
