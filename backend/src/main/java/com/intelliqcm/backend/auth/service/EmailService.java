@@ -15,8 +15,8 @@ public class EmailService {
     private final String frontendUrl;
 
     public EmailService(
-            @Value("${resend.api.key}") String apiKey,
-            @Value("${resend.from}") String from,
+            @Value("${resend.api.key:${RESEND_API_KEY}}") String apiKey,
+            @Value("${resend.from:${RESEND_FROM:noreply@intelliqcm.com}}") String from,
             @Value("${app.frontend-url:http://localhost:5173}") String frontendUrl
     ) {
         this.apiKey = apiKey;
