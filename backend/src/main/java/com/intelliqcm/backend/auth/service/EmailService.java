@@ -12,20 +12,23 @@ public class EmailService {
     private final WebClient webClient;
     private final String apiKey;
     private final String from;
+    private final String frontendUrl;
 
     public EmailService(
             @Value("${resend.api.key}") String apiKey,
-            @Value("${resend.from}") String from
+            @Value("${resend.from}") String from,
+            @Value("${app.frontend-url:http://localhost:5173}") String frontendUrl
     ) {
         this.apiKey = apiKey;
         this.from = from;
+        this.frontendUrl = frontendUrl;
         this.webClient = WebClient.builder()
                 .baseUrl("https://api.resend.com")
                 .build();
     }
 
     public void sendVerificationEmail(String toEmail, String name, String token) {
-        String verifyUrl = "http://localhost:5173/verify-email?token=" + token;
+        String verifyUrl = frontendUrl + "/verify-email?token=" + token;
 
         String html = """
             <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:32px;background:#111827;color:#f9fafb;border-radius:12px">

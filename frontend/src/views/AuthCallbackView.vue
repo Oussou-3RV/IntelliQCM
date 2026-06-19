@@ -23,7 +23,7 @@ onMounted(async () => {
   if (token) {
     // Récupère les infos du user depuis le backend avec le token
     try {
-      const res = await fetch('http://localhost:8080/api/auth/me', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       if (res.ok) {

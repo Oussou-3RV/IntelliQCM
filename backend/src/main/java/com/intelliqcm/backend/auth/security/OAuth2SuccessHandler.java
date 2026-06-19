@@ -5,6 +5,7 @@ import com.intelliqcm.backend.auth.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -19,7 +20,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    private static final String FRONTEND_REDIRECT = "http://localhost:5173/auth/callback";
+    @Value("${app.frontend-url:http://localhost:5173}")
+    private String frontendUrl;
 
     @Override
     public void onAuthenticationSuccess(
@@ -48,6 +50,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String token = jwtUtil.generateToken(user.getEmail());
 
         // Redirige vers le frontend avec le token dans l'URL
-        response.sendRedirect(FRONTEND_REDIRECT + "?token=" + token);
+        response.sendRedirect(frontendUrl + "/auth/callback?token=" + token);
     }
 }
