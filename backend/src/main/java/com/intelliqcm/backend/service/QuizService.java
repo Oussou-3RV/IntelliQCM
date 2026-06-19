@@ -13,10 +13,10 @@ import java.util.Map;
 @Service
 public class QuizService {
 
-    @Value("${openai.api.key}")
+    @Value("${openai.api.key:${OPENAI_API_KEY}}")
     private String apiKey;
 
-    @Value("${openai.model}")
+    @Value("${openai.model:gpt-4o-mini}")
     private String model;
 
     private final WebClient webClient;
