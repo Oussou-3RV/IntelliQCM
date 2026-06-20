@@ -95,7 +95,7 @@
 
       <!-- Google -->
       <a
-        :href="`${import.meta.env.VITE_API_URL}/oauth2/authorization/google`"
+        :href="googleAuthUrl"
         class="flex items-center justify-center gap-3 w-full border border-gray-700 hover:border-gray-600 bg-gray-800/40 hover:bg-gray-800 text-white text-sm font-medium py-3 rounded-xl transition-all"
       >
         <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
@@ -129,6 +129,8 @@ import { ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { User, Mail, Lock, UserPlus, Loader2, AlertCircle, Eye, EyeOff, CheckCircle, GraduationCap } from 'lucide-vue-next'
+
+const googleAuthUrl = `${import.meta.env.VITE_API_URL}/oauth2/authorization/google`
 
 const router = useRouter()
 const auth = useAuthStore()
