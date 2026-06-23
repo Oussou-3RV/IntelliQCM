@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8080/api/quiz'
+const BASE_URL = `${import.meta.env.VITE_API_URL}/api/quiz`
 
 function authHeaders() {
   const token = localStorage.getItem('token')

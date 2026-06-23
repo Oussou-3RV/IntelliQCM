@@ -12,25 +12,32 @@ public class EmailService {
     private final WebClient webClient;
     private final String apiKey;
     private final String from;
+    private final String frontendUrl;
 
     public EmailService(
-            @Value("${resend.api.key}") String apiKey,
-            @Value("${resend.from}") String from
+            @Value("${resend.api.key:${RESEND_API_KEY}}") String apiKey,
+            @Value("${resend.from:${RESEND_FROM:noreply@intelliqcm.com}}") String from,
+            @Value("${app.frontend-url:http://localhost:5173}") String frontendUrl
     ) {
         this.apiKey = apiKey;
         this.from = from;
+        this.frontendUrl = frontendUrl;
         this.webClient = WebClient.builder()
                 .baseUrl("https://api.resend.com")
                 .build();
     }
 
     public void sendVerificationEmail(String toEmail, String name, String token) {
-        String verifyUrl = "http://localhost:5173/verify-email?token=" + token;
+        String verifyUrl = frontendUrl + "/verify-email?token=" + token;
 
         String html = """
             <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:32px;background:#111827;color:#f9fafb;border-radius:12px">
+              <div style="text-align:center;margin-bottom:24px">
+                <span style="font-size:28px;vertical-align:middle">🎓</span>
+                <span style="font-size:20px;font-weight:900;color:#818cf8;vertical-align:middle;margin-left:8px">IntelliQCM</span>
+              </div>
               <h1 style="font-size:24px;font-weight:900;margin-bottom:8px">Confirme ton adresse email</h1>
-              <p style="color:#9ca3af;margin-bottom:24px">Bonjour %s, clique sur le bouton ci-dessous pour activer ton compte QuizAI.</p>
+              <p style="color:#9ca3af;margin-bottom:24px">Bonjour %s, clique sur le bouton ci-dessous pour activer ton compte IntelliQCM.</p>
               <a href="%s"
                  style="display:inline-block;background:#4f46e5;color:white;text-decoration:none;padding:12px 28px;border-radius:8px;font-weight:600;font-size:15px">
                 Vérifier mon email
@@ -42,7 +49,7 @@ public class EmailService {
         Map<String, Object> body = Map.of(
                 "from", from,
                 "to", new String[]{toEmail},
-                "subject", "Confirme ton adresse email — QuizAI",
+                "subject", "Confirme ton adresse email — IntelliQCM",
                 "html", html
         );
 

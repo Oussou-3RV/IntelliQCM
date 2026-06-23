@@ -88,7 +88,7 @@ const features = [
     step: 1,
     icon: Upload,
     title: 'Upload ton cours',
-    description: 'Dépose un PDF ou colle directement ton texte. QuizAI extrait et analyse le contenu automatiquement.'
+    description: 'Dépose un PDF ou colle directement ton texte. IntelliQCM extrait et analyse le contenu automatiquement.'
   },
   {
     step: 2,
