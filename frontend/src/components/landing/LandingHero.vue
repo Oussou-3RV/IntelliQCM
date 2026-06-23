@@ -12,7 +12,7 @@
           en quiz en <span class="text-indigo-400">30 secondes</span>
         </h1>
         <p class="text-gray-400 text-lg max-w-xl mx-auto leading-relaxed">
-          Upload un PDF ou colle ton texte. QuizAI génère des questions ciblées,
+          Upload un PDF ou colle ton texte. IntelliQCM génère des questions ciblées,
           t'accompagne pendant la révision et identifie tes lacunes.
         </p>
       </div>

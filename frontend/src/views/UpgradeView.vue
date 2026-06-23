@@ -4,8 +4,8 @@
 
       <div class="space-y-3">
         <RouterLink to="/" class="inline-flex items-center gap-2 justify-center mb-2">
-          <span class="text-indigo-400 text-2xl">◈</span>
-          <span class="text-white font-black text-xl tracking-tight">QuizAI</span>
+          <GraduationCap :size="32" class="text-indigo-400" />
+          <span class="text-white font-black text-xl tracking-tight">IntelliQCM</span>
         </RouterLink>
         <h1 class="text-3xl font-black tracking-tight">
           Limite quotidienne atteinte
@@ -62,6 +62,7 @@
 
 <script setup>
 import { RouterLink } from 'vue-router'
+import { GraduationCap } from 'lucide-vue-next'
 
 function comingSoon() {
   alert('Le paiement en ligne sera disponible prochainement.')
