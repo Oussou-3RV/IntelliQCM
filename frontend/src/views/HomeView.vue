@@ -205,8 +205,8 @@
       if (e.status === 429 || e.message?.includes('quota')) {
         router.push('/upgrade')
         return
-      }
-      error.value = 'Erreur lors de la génération du quiz. Vérifie que le backend est lancé.'
+      } // au cas le backend ne demarre pas correctement msg d'erreur
+      error.value = 'Impossible de générer le quiz pour le moment. Veuillez réessayer plus tard. Si le problème persiste, contactez le développeur.';
     } finally {
       loading.value = false
     }
