@@ -2,7 +2,6 @@
 
 IntelliQCM est une application web qui génère des questionnaires à choix multiples (QCM) à l'aide de l'intelligence artificielle. L'utilisateur crée un compte, demande un QCM et obtient des questions prêtes à utiliser, générées par le modèle GPT-4o mini d'OpenAI.
 
-J'ai conçu et développé ce projet seul, de la base de code jusqu'au déploiement en production. Il s'appelait QuizAI à l'origine.
 
 **Démo en ligne :** intelliQCM.com
 
